@@ -1,0 +1,432 @@
+{
+	"info": {
+		"_postman_id": "1025dcc8-905e-4387-94ee-8a94a976d9c5",
+		"name": "Reqres - API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => pm.response.to.have.status(201));\r",
+							"pm.test(\"Status message is Created\", () => pm.expect(pm.response.status).to.eql(\"Created\"));\r",
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"pm.test(\"Response has id\", () => pm.expect(jsonData).to.have.property(\"id\"));\r",
+							"\r",
+							"if (jsonData.id) {\r",
+							"    pm.environment.set(\"created_user_id\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "1569cf3f-19a9-42a1-8c20-e1569c602268"
+					}
+				}
+			],
+			"id": "9641240e-c232-4ab4-8ea7-85d5e4e1289c",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Hedwig\",\r\n    \"job\": \"Finance Officer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://reqres.in/api/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Status message is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+							"\r",
+							"let body = pm.response.json();\r",
+							"pm.test(\"Response has token\", () => pm.expect(body).to.have.property(\"token\"));\r",
+							"if (body.token) pm.environment.set(\"token\", body.token);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "0426113f-e80f-4ef6-b641-bc344b98425a"
+					}
+				}
+			],
+			"id": "516efb83-4e93-4d4d-a7a1-3f759743aa12",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"janet.weaver@reqres.in\",\r\n  \"password\": \"cityslicka\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/register"
+			},
+			"response": []
+		},
+		{
+			"name": "List Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Status message is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+							"\r",
+							"let data = pm.response.json();\r",
+							"pm.test(\"Response contains data array\", () => pm.expect(data).to.have.property(\"data\").that.is.an(\"array\"));\r",
+							"pm.test(\"At least one user present\", () => pm.expect(data.data.length).to.be.greaterThan(0));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "ff2598c2-6e65-46f4-b08d-5c3428cdcbde"
+					}
+				}
+			],
+			"id": "9270dfd6-1c39-49dc-93b2-df1980a01fa1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": "{{base_url}}/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Status message is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+							"\r",
+							"let obj = pm.response.json();\r",
+							"pm.test(\"Response has data object\", () => pm.expect(obj).to.have.property(\"data\"));\r",
+							"pm.test(\"Data.id equals requested user\", () => pm.expect(obj.data.id).to.eql(parseInt(pm.environment.get(\"user_id\"))));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "01b29f59-39aa-4100-9b9b-761aaee7c6e6"
+					}
+				}
+			],
+			"id": "789059f5-6373-4239-a70d-32a872c98b71",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": "{{base_url}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Status message is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"pm.test(\"Response contains name and job\", () => {\r",
+							"    pm.expect(res).to.have.property(\"name\");\r",
+							"    pm.expect(res).to.have.property(\"job\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "505718c5-d786-4c9c-8df7-342f4d61c4fe"
+					}
+				}
+			],
+			"id": "f8b40918-8fd6-4bf3-a030-f42fcf5da1bf",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Hedwig\",\r\n  \"job\": \"Product Owner\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update User (partial)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+							"pm.test(\"Status message is OK\", () => pm.expect(pm.response.status).to.eql(\"OK\"));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"pm.test(\"Response contains updated job field\", () => pm.expect(res).to.have.property(\"job\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "9b9e0e27-596e-491c-bc0a-5088c2b7aa10"
+					}
+				}
+			],
+			"id": "30a46ea9-644d-4643-902b-25d49061580a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Hedwig\",\r\n  \"job\": \"Finance and Operations\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => pm.response.to.have.status(204));\r",
+							"pm.test(\"Status message is No Content\", () => pm.expect(pm.response.status).to.eql(\"No Content\"));\r",
+							"\r",
+							"// body should be empty for 204; ensure JSON parsing is safe\r",
+							"pm.test(\"Body is empty\", () => pm.expect(pm.response.text().length).to.eql(0));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "e9f59320-ccbe-4603-a2b2-794c7bd832be"
+					}
+				}
+			],
+			"id": "c6926bff-74cd-4332-9ec2-8d324d97c88c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": "{{base_url}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single User (NotFound)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", () => pm.response.to.have.status(404));\r",
+							"pm.test(\"Status message is Not Found\", () => pm.expect(pm.response.status).to.eql(\"Not Found\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "db9d168a-fb0d-41fc-b1e8-86bb967daaac"
+					}
+				}
+			],
+			"id": "5d339478-89c4-400a-a860-88bd8afd10a3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": "{{base_url}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Register (Missing Password)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => pm.response.to.have.status(400));\r",
+							"pm.test(\"Status message is Bad Request\", () => pm.expect(pm.response.status).to.eql(\"Bad Request\"));\r",
+							"\r",
+							"let body = pm.response.json();\r",
+							"pm.test(\"Error message present\", () => pm.expect(body).to.have.property(\"error\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "7a9e29ff-6713-4c01-8d59-5d9cbac19e50"
+					}
+				}
+			],
+			"id": "ddc15f36-7a02-4edf-b1bf-de4306f15b7c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": "{{base_url}}/register"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				],
+				"id": "cb448cdf-8413-4579-b45c-e64eba9ceacc"
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				],
+				"id": "ae42a072-d297-4b18-87d3-dc96a36dc65b"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://reqres.in/api",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "2",
+			"type": "string"
+		},
+		{
+			"key": "x-api-key",
+			"value": "reqres-free-v1",
+			"type": "string"
+		},
+		{
+			"key": "created_user_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
